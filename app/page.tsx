@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { debounce } from "lodash"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 interface Movie {
   id: number
@@ -22,7 +23,33 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const [suggestions, setSuggestions] = useState<Movie[]>([])
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [showSecondText, setShowSecondText] = useState(false)
+  const [showThirdText, setShowThirdText] = useState(false)
+  const [showFourthText, setShowFourthText] = useState(false)
   const router = useRouter()
+
+  useEffect(() => {
+    const timers = [
+      setTimeout(() => setShowSecondText(true), 1332),
+      setTimeout(() => setShowThirdText(true), 2664),
+      setTimeout(() => setShowFourthText(true), 3996)
+    ];
+
+    return () => timers.forEach(timer => clearTimeout(timer));
+  }, []);
+
+  useEffect(() => {
+    // Get movie ID and title from URL parameters
+    const params = new URLSearchParams(window.location.search);
+    const movieId = params.get('movie');
+    const movieTitle = params.get('title');
+
+    // If we have a movie ID from the URL, search for it
+    if (movieId && movieTitle) {
+      setSearch(movieTitle);
+      searchMovie(movieId);
+    }
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     setMousePosition({ x: e.clientX, y: e.clientY })
@@ -96,17 +123,19 @@ export default function Home() {
           transition: "background-position 0.3s ease-out",
         }}
       />
-      <div className="container mx-auto px-4 py-16 transition-all duration-300 ease-in-out relative z-10">
-        <div className="max-w-2xl mx-auto space-y-8">
+      <div className="container mx-auto px-8 py-24 transition-all duration-300 ease-in-out relative z-10">
+        <div className="max-w-4xl mx-auto space-y-12">
           <div className="text-center">
-            <h1 className="text-6xl font-bold text-white mb-8 tracking-tight">MovieRAG</h1>
+            <h1 className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-900 mb-8">
+              Sum-A-Film
+            </h1>
             <div className="relative">
               <Input
                 type="text"
                 placeholder="Select your movie"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="bg-white/10 text-white placeholder:text-gray-400 pr-10"
+                className="bg-white/10 text-white placeholder:text-gray-400 pr-16 text-3xl py-6 px-8"
               />
               <Button
                 onClick={() => suggestions[0] && searchMovie(suggestions[0].id)}
@@ -146,6 +175,32 @@ export default function Home() {
                 </Card>
               )}
             </div>
+            <div className={`mt-8 relative h-16 overflow-hidden ${
+              movie ? 'hidden' : 'block'
+            }`}>
+              <p className={`text-4xl bg-gradient-to-r from-white via-slate-400 to-slate-900 bg-clip-text text-transparent font-medium absolute w-full transition-all duration-1000 ease-in-out ${
+                showSecondText ? '-translate-y-16 opacity-0' : 'translate-y-0 opacity-100'
+              }`}>
+                Lost in a movie's plot? 
+              </p>
+              <p className={`text-4xl bg-gradient-to-r from-white via-slate-400 to-slate-900 bg-clip-text text-transparent font-medium absolute w-full transition-all duration-1000 ease-in-out ${
+                !showSecondText ? 'translate-y-16 opacity-0' : 
+                showThirdText ? '-translate-y-16 opacity-0' : 'translate-y-0 opacity-100'
+              }`}>
+                Need a quick recap?
+              </p>
+              <p className={`text-4xl bg-gradient-to-r from-white via-slate-400 to-slate-900 bg-clip-text text-transparent font-medium absolute w-full transition-all duration-1000 ease-in-out ${
+                !showThirdText ? 'translate-y-16 opacity-0' : 
+                showFourthText ? '-translate-y-16 opacity-0' : 'translate-y-0 opacity-100'
+              }`}>
+                Movie too long?
+              </p>
+              <p className={`text-4xl bg-gradient-to-r from-white via-slate-400 to-slate-900 bg-clip-text text-transparent font-medium absolute w-full transition-all duration-1000 ease-in-out ${
+                !showFourthText ? 'translate-y-16 opacity-0' : 'translate-y-0 opacity-100'
+              }`}>
+                We got you covered
+              </p>
+            </div>
           </div>
 
           {loading && <div className="text-center text-white animate-pulse">Searching...</div>}
@@ -180,6 +235,18 @@ export default function Home() {
               </CardContent>
             </Card>
           )}
+
+          <div className="text-center">
+            <Link 
+              href="/browse" 
+              className="inline-flex items-center bg-gradient-to-br from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 text-white font-semibold py-2 px-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:border-blue-400 hover:border-2 border-2 border-transparent"
+            >
+              <span>Browse Movies</span>
+              <svg className="w-6 h-6 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
         </div>
       </div>
     </main>
