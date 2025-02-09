@@ -98,8 +98,8 @@ export default function BrowsePage() {
             onClick={() => setSelectedGenre('all')}
             className={`px-6 py-3 rounded-full text-xl transition-all ${
               selectedGenre === 'all' 
-                ? 'bg-indigo-600 text-white' 
-                : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                ? 'bg-gradient-to-br from-slate-800 to-slate-900 text-white border-2 border-blue-400' 
+                : 'bg-gradient-to-br from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 text-white border-2 border-transparent hover:border-blue-400'
             }`}
           >
             All
@@ -110,8 +110,8 @@ export default function BrowsePage() {
               onClick={() => setSelectedGenre(genre.id)}
               className={`px-6 py-3 rounded-full text-xl transition-all ${
                 selectedGenre === genre.id 
-                  ? 'bg-indigo-600 text-white' 
-                  : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                  ? 'bg-gradient-to-br from-slate-800 to-slate-900 text-white border-2 border-blue-400' 
+                  : 'bg-gradient-to-br from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 text-white border-2 border-transparent hover:border-blue-400'
               }`}
             >
               {genre.name}
