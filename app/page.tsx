@@ -129,20 +129,20 @@ export default function Home() {
             <h1 className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-900 mb-8">
               Sum-A-Film
             </h1>
-            <div className="relative">
+            <div className="relative max-w-2xl mx-auto">
               <Input
                 type="text"
-                placeholder="Select your movie"
+                placeholder="Search for a movie..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="bg-white/10 text-white placeholder:text-gray-400 pr-16 text-3xl py-6 px-8"
+                className="bg-white/10 text-white placeholder:text-gray-400 pr-16 text-xl py-8 px-8 rounded-full border-2 border-transparent focus:border-indigo-500 transition-all"
               />
               <Button
                 onClick={() => suggestions[0] && searchMovie(suggestions[0].id)}
                 disabled={loading}
-                className="absolute right-0 top-0 bottom-0 bg-slate-800 hover:bg-slate-700 transition-colors duration-200"
+                className="absolute right-3 top-1/2 -translate-y-1/2 bg-gradient-to-br from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 text-white font-semibold rounded-full h-14 w-14 flex items-center justify-center transition-all duration-300 hover:scale-105 hover:border-blue-400 hover:border-2 border-2 border-transparent"
               >
-                <Search className="h-4 w-4" />
+                <Search className="h-6 w-6" />
               </Button>
               {suggestions.length > 0 && (
                 <Card className="absolute mt-1 w-full bg-black/80 backdrop-blur-sm border-none z-50">
