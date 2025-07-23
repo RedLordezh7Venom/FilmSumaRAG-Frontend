@@ -1,0 +1,5 @@
+Add errors and logging at different parts to stop wesbite from crashing in case of 
+CORS error
+Render Error
+API error
+and cover other cases I didn't specify, also tell me the reason why the other cases would be good
