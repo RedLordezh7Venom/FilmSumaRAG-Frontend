@@ -12,8 +12,38 @@ async function generateSummary(movieId: string, length: number) {
     `https://api.themoviedb.org/3/movie/${movieId}?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&append_to_response=credits,reviews`
   ).then((res) => res.json());
 
+  const primaryApiUrl = process.env.NEXT_PUBLIC_FASTAPI_URL;
+  const fallbackApiUrl = "http://127.0.0.1:8000";
+
+  let response;
+  let data;
+
   try {
-    const response = await fetch("https://filmsumarag-fastapi.onrender.com/summarize", {
+    if (primaryApiUrl) {
+      response = await fetch(`${primaryApiUrl}/summarize`, {
+        method: "POST",
+        headers: {
+          "accept": "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          moviename: movie.title
+        }),
+      });
+
+      if (response.ok) {
+        data = await response.json();
+        return data;
+      } else {
+        console.warn(`Primary API URL (${primaryApiUrl}) failed with status: ${response.status}. Attempting fallback.`);
+      }
+    }
+  } catch (error) {
+    console.warn(`Primary API URL (${primaryApiUrl}) failed:`, error, "Attempting fallback.");
+  }
+
+  try {
+    response = await fetch(`${fallbackApiUrl}/summarize`, {
       method: "POST",
       headers: {
         "accept": "application/json",
@@ -24,15 +54,15 @@ async function generateSummary(movieId: string, length: number) {
       }),
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+    if (response.ok) {
+      data = await response.json();
+      return data;
+    } else {
+      throw new Error(`Fallback API URL (${fallbackApiUrl}) failed with status: ${response.status}`);
     }
-
-    const data = await response.json();
-    return data;
   } catch (error) {
-    console.error("Error fetching summary from FastAPI:", error);
-    throw error;
+    console.error("Error fetching summary from FastAPI (both primary and fallback failed):", error);
+    throw new Error("Backend not working: API is offline.");
   }
 }
 
